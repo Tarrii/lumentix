@@ -220,6 +220,22 @@ Authorization: Bearer <token>
 
 # 🗄️ Database (TypeORM)
 
+## Database bootstrap
+
+A fresh database is built entirely from migrations (`synchronize` is off):
+
+```bash
+cp .env.example .env            # set DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME
+createdb lumentix                # or use the docker-compose Postgres
+npm run migration:run            # applies 1709999999999-CreateInitialSchema, then every later migration
+npm run check-migrations         # runs the migrations and fails if entities and migrations drift
+```
+
+`1709999999999-CreateInitialSchema` creates every entity table that no later migration creates. Columns that a
+later migration adds with `ALTER TABLE ... ADD COLUMN` are intentionally left out of the baseline so those
+migrations still apply. When you change an entity, add a new migration with
+`npm run migration:generate -- src/database/migrations/<Name>`; do not edit the baseline.
+
 ## Entities
 
 ### UserEntity
